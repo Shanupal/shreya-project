@@ -1,0 +1,182 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 240 10% 99%;
+    --foreground: 220 12% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 12% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 12% 12%;
+
+    --primary: 200 78% 52%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 156 39% 85%;
+    --secondary-foreground: 220 12% 12%;
+
+    --muted: 240 5% 96%;
+    --muted-foreground: 220 9% 46%;
+
+    --accent: 280 65% 88%;
+    --accent-foreground: 220 12% 12%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 200 78% 52%;
+
+    --radius: 0.75rem;
+
+    /* Wellness Platform Colors */
+    --wellness-primary: 200 78% 52%;
+    --wellness-secondary: 156 39% 65%;
+    --wellness-accent: 280 65% 70%;
+    --wellness-calm: 210 40% 96%;
+    --wellness-success: 142 71% 45%;
+    --wellness-warning: 38 92% 50%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--wellness-primary)), hsl(var(--wellness-accent)));
+    --gradient-calm: linear-gradient(180deg, hsl(var(--wellness-calm)), hsl(var(--background)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--wellness-primary) / 0.1), hsl(var(--wellness-accent) / 0.1));
+    
+    /* Shadows */
+    --shadow-wellness: 0 10px 30px -10px hsl(var(--wellness-primary) / 0.2);
+    --shadow-card: 0 4px 20px -4px hsl(var(--foreground) / 0.1);
+    
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 220 15% 6%;
+    --foreground: 220 10% 95%;
+
+    --card: 220 12% 8%;
+    --card-foreground: 220 10% 95%;
+
+    --popover: 220 12% 8%;
+    --popover-foreground: 220 10% 95%;
+
+    --primary: 200 78% 52%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 217 32% 17%;
+    --secondary-foreground: 220 10% 95%;
+
+    --muted: 217 32% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 280 65% 60%;
+    --accent-foreground: 220 10% 95%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 220 10% 95%;
+
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --ring: 200 78% 52%;
+
+    /* Dark mode wellness colors */
+    --wellness-primary: 200 78% 52%;
+    --wellness-secondary: 156 39% 55%;
+    --wellness-accent: 280 65% 60%;
+    --wellness-calm: 217 32% 12%;
+    
+    /* Dark gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--wellness-primary) / 0.8), hsl(var(--wellness-accent) / 0.8));
+    --gradient-calm: linear-gradient(180deg, hsl(var(--wellness-calm)), hsl(var(--background)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--wellness-primary) / 0.1), hsl(var(--wellness-accent) / 0.1));
+    
+    --shadow-wellness: 0 10px 30px -10px hsl(var(--wellness-primary) / 0.3);
+    --shadow-card: 0 4px 20px -4px hsl(0 0% 0% / 0.2);
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .gradient-text {
+    @apply bg-gradient-to-r from-wellness-primary to-wellness-accent bg-clip-text text-transparent;
+  }
+
+  .wellness-card {
+    @apply bg-card border border-border rounded-xl p-6 shadow-[var(--shadow-card)] transition-[var(--transition-smooth)] hover:shadow-[var(--shadow-wellness)];
+  }
+
+  .wellness-button {
+    @apply bg-gradient-to-r from-wellness-primary to-wellness-accent text-primary-foreground font-medium px-6 py-3 rounded-lg transition-[var(--transition-smooth)] hover:scale-105 hover:shadow-[var(--shadow-wellness)];
+  }
+
+  .floating-element {
+    animation: float 3s ease-in-out infinite;
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
