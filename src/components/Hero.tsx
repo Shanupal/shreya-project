@@ -1,8 +1,31 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowRight, Heart, Brain, Users, Shield } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "@/store/hooks";
 
 export const Hero = () => {
+  const navigate = useNavigate();
+  const { token } = useAppSelector((state) => state.auth);
+
+  const handleGetStarted = () => {
+    if (token) {
+      navigate("/dashboard");
+    } else {
+      navigate("/login");
+    }
+  };
+
+  const handleWatchDemo = () => {
+    // Scroll to features section or show demo modal
+    const featuresSection = document.getElementById("features");
+    if (featuresSection) {
+      featuresSection.scrollIntoView({ behavior: "smooth" });
+    } else {
+      // If no features section, navigate to login with demo
+      navigate("/login");
+    }
+  };
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-hero">
       {/* Floating background elements */}
@@ -33,17 +56,22 @@ export const Hero = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="wellness-button text-lg px-8 py-4 h-auto">
+              <Button className="wellness-button text-lg px-8 py-4 h-auto" onClick={handleGetStarted}>
                 Get Started <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
-              <Button variant="outline" size="lg" className="text-lg px-8 py-4 h-auto border-wellness-primary/30 hover:bg-wellness-primary/10">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="text-lg px-8 py-4 h-auto border-wellness-primary/30 hover:bg-wellness-primary/10"
+                onClick={handleWatchDemo}
+              >
                 Watch Demo
               </Button>
             </div>
           </div>
 
           {/* Feature Cards */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div id="features" className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="wellness-card group hover:scale-105">
               <div className="text-center">
                 <div className="w-12 h-12 bg-gradient-wellness rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">

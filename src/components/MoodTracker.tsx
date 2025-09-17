@@ -37,6 +37,18 @@ export const MoodTracker = () => {
       const payload = { moodId: selected, intensity: selected, note };
       await dispatch(logEmotion(payload)).unwrap();
       toast.success("Mood logged successfully");
+      
+      // Store mood entry in localStorage for demo purposes
+      const existingEntries = JSON.parse(localStorage.getItem("mood_entries") || "[]");
+      const newEntry = {
+        mood_id: selected,
+        created_at: new Date().toISOString(),
+        notes: note,
+        id: Date.now().toString()
+      };
+      existingEntries.unshift(newEntry);
+      localStorage.setItem("mood_entries", JSON.stringify(existingEntries.slice(0, 50))); // Keep last 50 entries
+      
       setNote("");
       setSelected(null);
       // refresh history
@@ -55,12 +67,19 @@ export const MoodTracker = () => {
             <button key={m.id} onClick={() => setSelected(m.id)} className={`p-3 rounded-md ${selected===m.id? "ring-2 ring-offset-2":""}`}>
               <div className="text-2xl">{m.emoji}</div>
               <div className="text-sm mt-1">{m.label}</div>
-            </button>
+             className={`p-3 rounded-md transition-all hover:scale-105 ${
+               selected === m.id 
+                 ? "ring-2 ring-wellness-primary ring-offset-2 bg-wellness-primary/10" 
+                 : "hover:bg-muted/50"
+             }`}
           ))}
-        </div>
+         placeholder="Add a note about your mood (optional)..." 
+         className="min-h-[100px]"
         <Textarea value={note} onChange={(e)=>setNote(e.target.value)} placeholder="Add a note (optional)" />
         <div className="mt-4">
-          <Button onClick={submit}>Log Mood</Button>
+          <Button onClick={submit} className="wellness-button" disabled={!selected}>
+            {selected ? "Log Mood" : "Please select your mood first"}
+          </Button>
         </div>
 
         <div className="mt-6">

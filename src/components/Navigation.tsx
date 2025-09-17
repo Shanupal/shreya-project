@@ -2,10 +2,35 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Heart, User, MessageCircle, BookOpen, BarChart3 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAppSelector, useAppDispatch } from "@/store/hooks";
+import { logout } from "@/slices/authSlice";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export const Navigation = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { user, token } = useAppSelector((state) => state.auth);
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleSignOut = async () => {
+    try {
+      await dispatch(logout()).unwrap();
+      localStorage.removeItem("demo_user");
+      toast.success("Signed out successfully");
+      navigate("/");
+    } catch (error) {
+      toast.error("Sign out failed");
+    }
+  };
+
+  const handleGetStarted = () => {
+    navigate("/login");
+  };
+
+  const handleSignIn = () => {
+    navigate("/login");
+  };
   const navItems = [
     { label: "Dashboard", to: "/dashboard", icon: BarChart3 },
     { label: "Mood Tracker", to: "/mood", icon: Heart },
@@ -41,13 +66,26 @@ export const Navigation = () => {
 
           {/* Right side buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" size="sm">
-              Sign In
-            </Button>
-            <Button className="wellness-button">
-              <User className="w-4 h-4 mr-2" />
-              Get Started
-            </Button>
+            {token && user ? (
+              <>
+                <span className="text-sm text-muted-foreground">
+                  Welcome, {user.name || user.email}
+                </span>
+                <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" size="sm" onClick={handleSignIn}>
+                  Sign In
+                </Button>
+                <Button className="wellness-button" onClick={handleGetStarted}>
+                  <User className="w-4 h-4 mr-2" />
+                  Get Started
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -74,13 +112,26 @@ export const Navigation = () => {
               </Link>
             ))}
             <div className="px-4 pt-4 space-y-2">
-              <Button variant="ghost" className="w-full justify-start">
-                Sign In
-              </Button>
-              <Button className="wellness-button w-full">
-                <User className="w-4 h-4 mr-2" />
-                Get Started
-              </Button>
+              {token && user ? (
+                <>
+                  <div className="px-4 py-2 text-sm text-muted-foreground">
+                    Welcome, {user.name || user.email}
+                  </div>
+                  <Button variant="ghost" className="w-full justify-start" onClick={handleSignOut}>
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="ghost" className="w-full justify-start" onClick={handleSignIn}>
+                    Sign In
+                  </Button>
+                  <Button className="wellness-button w-full" onClick={handleGetStarted}>
+                    <User className="w-4 h-4 mr-2" />
+                    Get Started
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         )}

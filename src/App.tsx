@@ -9,6 +9,7 @@ import DashboardPage from "./pages/DashboardPage";
 import Mood from "./pages/Mood";
 import Support from "./pages/Support";
 import Resources from "./pages/Resources";
+import Login from "./pages/Login";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -24,6 +25,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/mood" element={<Mood />} />
           <Route path="/support" element={<Support />} />

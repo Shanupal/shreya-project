@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { getAnalytics } from "@/slices/adminSlice";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +24,7 @@ import {
 
 export const Dashboard = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { analytics } = useAppSelector((s)=>s.admin);
   useEffect(()=>{ dispatch(getAnalytics()).unwrap().then(()=>{}).catch(()=>{}); },[dispatch]);
 
@@ -64,6 +66,35 @@ export const Dashboard = () => {
     { title: "Peer Support Group", time: "Thu 5:00 PM", type: "peer" },
   ];
 
+  // Button handlers
+  const handleLogMood = () => {
+    navigate("/mood");
+  };
+
+  const handleChatWithAI = () => {
+    navigate("/support");
+  };
+
+  const handleWriteJournal = () => {
+    // For now, navigate to mood tracker as it includes notes
+    // In future, this could be a dedicated journal page
+    navigate("/mood");
+    toast.info("Journal feature coming soon! For now, you can add notes with your mood entries.");
+  };
+
+  const handleBrowseResources = () => {
+    navigate("/resources");
+  };
+
+  const handleLearnMore = () => {
+    // Open a modal or navigate to a tips page
+    toast.info("More wellness tips and techniques coming soon!");
+  };
+
+  const handleEmergencyContact = () => {
+    // In a real app, this would show emergency contacts or crisis resources
+    toast.error("If you're in crisis, please contact emergency services (911) or a crisis hotline immediately.");
+  };
   return (
     <section id="dashboard" className="py-20">
       <div className="container mx-auto px-4">
@@ -226,19 +257,31 @@ export const Dashboard = () => {
               <Card className="wellness-card">
                 <h3 className="font-semibold text-lg mb-4">Quick Actions</h3>
                 <div className="space-y-3">
-                  <Button className="w-full wellness-button justify-start">
+                  <Button className="w-full wellness-button justify-start" onClick={handleLogMood}>
                     <Heart className="w-4 h-4 mr-2" />
                     Log Today's Mood
                   </Button>
-                  <Button variant="outline" className="w-full justify-start border-wellness-accent/30 hover:bg-wellness-accent/10">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start border-wellness-accent/30 hover:bg-wellness-accent/10"
+                    onClick={handleChatWithAI}
+                  >
                     <MessageCircle className="w-4 h-4 mr-2" />
                     Chat with AI
                   </Button>
-                  <Button variant="outline" className="w-full justify-start border-wellness-secondary/30 hover:bg-wellness-secondary/10">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start border-wellness-secondary/30 hover:bg-wellness-secondary/10"
+                    onClick={handleWriteJournal}
+                  >
                     <Brain className="w-4 h-4 mr-2" />
                     Write in Journal
                   </Button>
-                  <Button variant="outline" className="w-full justify-start border-wellness-primary/30 hover:bg-wellness-primary/10">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start border-wellness-primary/30 hover:bg-wellness-primary/10"
+                    onClick={handleBrowseResources}
+                  >
                     <Award className="w-4 h-4 mr-2" />
                     Browse Resources
                   </Button>
@@ -274,7 +317,12 @@ export const Dashboard = () => {
                   <p className="text-sm text-muted-foreground">
                     Try the 5-4-3-2-1 grounding technique: Notice 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell, and 1 you can taste.
                   </p>
-                  <Button size="sm" variant="outline" className="w-full border-wellness-primary/30 hover:bg-wellness-primary/10">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="w-full border-wellness-primary/30 hover:bg-wellness-primary/10"
+                    onClick={handleLearnMore}
+                  >
                     Learn More
                   </Button>
                 </div>
@@ -289,7 +337,7 @@ export const Dashboard = () => {
                     <p className="text-sm text-muted-foreground mb-3">
                       If you're experiencing a mental health crisis, reach out immediately.
                     </p>
-                    <Button size="sm" variant="destructive" className="w-full">
+                    <Button size="sm" variant="destructive" className="w-full" onClick={handleEmergencyContact}>
                       Emergency Contact
                     </Button>
                   </div>

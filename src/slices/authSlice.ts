@@ -9,6 +9,13 @@ export const signup = createAsyncThunk("auth/signup", async (payload:any, { reje
 
 export const login = createAsyncThunk("auth/login", async (payload:any, { rejectWithValue }) => {
   try { const res = await api.post("/api/auth/login", payload); if(res.data?.token) setToken(res.data.token); return res.data; }
+    // Check if this is demo data
+    if (payload.user && payload.token) {
+      // This is demo login data, return it directly
+      return payload;
+    }
+    
+    // Otherwise, make API call
   catch (e:any){ return rejectWithValue(e.response?.data || e.message); }
 });
 

@@ -50,11 +50,53 @@ export const AISupport = () => {
   const handleSend = async () => {
     if(!text) return;
     try {
+      // Add user message to local state immediately for better UX
+      const userMessage = {
+        id: Date.now().toString(),
+        text: text,
+        sender: "user" as const,
+        timestamp: new Date(),
+        createdAt: new Date().toISOString()
+      };
+      
+      // For demo purposes, add a simulated AI response
+      const aiResponse = {
+        id: (Date.now() + 1).toString(),
+        text: generateAIResponse(text),
+        sender: "ai" as const,
+        timestamp: new Date(Date.now() + 1000),
+        createdAt: new Date(Date.now() + 1000).toISOString()
+      };
+      
+      // Store messages in localStorage for demo
+      const existingMessages = JSON.parse(localStorage.getItem("chat_messages") || "[]");
+      existingMessages.push(userMessage, aiResponse);
+      localStorage.setItem("chat_messages", JSON.stringify(existingMessages.slice(-100))); // Keep last 100 messages
+      
       await dispatch(sendMessage({ to: "support", text, room: "student-support" })).unwrap();
       toast.success("Message sent");
       setText("");
       dispatch(fetchChatHistory({}));
     } catch(e:any){ toast.error("Failed to send"); }
+  };
+
+  // Generate AI response based on user input (demo functionality)
+  const generateAIResponse = (userText: string): string => {
+    const lowerText = userText.toLowerCase();
+    
+    if (lowerText.includes("anxious") || lowerText.includes("anxiety")) {
+      return "I understand you're feeling anxious. Try the 4-7-8 breathing technique: breathe in for 4 counts, hold for 7, exhale for 8. This can help calm your nervous system. Would you like me to guide you through some other anxiety management techniques?";
+    } else if (lowerText.includes("stress") || lowerText.includes("overwhelmed")) {
+      return "Feeling overwhelmed is completely normal, especially as a student. Let's break things down into smaller, manageable steps. What's the most pressing thing on your mind right now? Sometimes just talking through it can help clarify priorities.";
+    } else if (lowerText.includes("sleep") || lowerText.includes("tired")) {
+      return "Sleep is crucial for mental health. Try establishing a bedtime routine: no screens 1 hour before bed, keep your room cool and dark, and consider some light stretching or meditation. What's been keeping you up at night?";
+    } else if (lowerText.includes("exam") || lowerText.includes("test")) {
+      return "Exam stress is very common. Remember to take regular breaks while studying (try the Pomodoro technique), stay hydrated, and get enough sleep. Your worth isn't defined by test scores. What specific aspect of exam preparation is worrying you most?";
+    } else if (lowerText.includes("sad") || lowerText.includes("depressed") || lowerText.includes("down")) {
+      return "I'm sorry you're feeling this way. Your feelings are valid, and it's brave of you to reach out. Consider talking to a counselor, spending time in nature, or doing a small activity you enjoy. If these feelings persist, please consider speaking with a mental health professional. You're not alone in this.";
+    } else {
+      return "Thank you for sharing that with me. I'm here to listen and support you. Can you tell me more about what you're experiencing? Sometimes talking through our thoughts and feelings can help us process them better.";
+    }
   };
 
   return (
@@ -63,11 +105,26 @@ export const AISupport = () => {
         <h2 className="text-xl font-semibold mb-4">AI Support</h2>
         <div className="mb-3">
           <div className="flex gap-2">
-            <Input value={text} onChange={(e:any)=>setText(e.target.value)} placeholder="Describe how you feel or choose a suggestion" />
-            <Button onClick={handleGetRecs}><Send size={16}/> Get Recommendations</Button>
+            <Input 
+              value={text} 
+              onChange={(e:any)=>setText(e.target.value)} 
+              placeholder="Describe how you feel or choose a suggestion"
+              onKeyPress={(e) => e.key === 'Enter' && handleGetRecs()}
+            />
+            <Button onClick={handleGetRecs} disabled={!text.trim()}>
+              <Send size={16}/> Get Recommendations
+            </Button>
           </div>
           <div className="mt-2 flex gap-2">
-            {quickSuggestions.map((q)=> <Badge key={q} onClick={()=>handleQuick(q)} className="cursor-pointer">{q}</Badge>)}
+            {quickSuggestions.map((q)=> (
+              <Badge 
+                key={q} 
+                onClick={()=>handleQuick(q)} 
+                className="cursor-pointer hover:bg-wellness-primary/20 transition-colors"
+              >
+                {q}
+              </Badge>
+            ))}
           </div>
         </div>
 
@@ -87,17 +144,35 @@ export const AISupport = () => {
 
         <div className="mt-6">
           <h3 className="font-semibold">Chat</h3>
-          <div className="border rounded p-3 max-h-64 overflow-auto">
+          <div className="border rounded p-3 max-h-64 overflow-auto bg-muted/20">
             {messages && messages.length ? messages.map((m:any, idx:number)=>(
-              <div key={idx} className={`mb-2 ${m.sender==='user'?'text-right':''}`}>
-                <div className="inline-block p-2 rounded bg-surface">{m.text}</div>
+              <div key={idx} className={`mb-3 ${m.sender==='user'?'text-right':''}`}>
+                <div className={`inline-block p-3 rounded-lg max-w-[80%] ${
+                  m.sender === 'user' 
+                    ? 'bg-wellness-primary text-white' 
+                    : 'bg-white border shadow-sm'
+                }`}>
+                  {m.text}
+                </div>
                 <div className="text-xs text-muted-foreground">{new Date(m.createdAt||m.timestamp).toLocaleString()}</div>
               </div>
-            )) : <div>No messages yet</div>}
+            )) : (
+              <div className="text-center text-muted-foreground py-8">
+                <MessageCircle className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                <p>Start a conversation with our AI support assistant</p>
+              </div>
+            )}
           </div>
           <div className="mt-2 flex gap-2">
-            <Input value={text} onChange={(e:any)=>setText(e.target.value)} placeholder="Type a message" />
-            <Button onClick={handleSend}><Send size={16}/></Button>
+            <Input 
+              value={text} 
+              onChange={(e:any)=>setText(e.target.value)} 
+              placeholder="Type a message..."
+              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+            />
+            <Button onClick={handleSend} disabled={!text.trim()}>
+              <Send size={16}/>
+            </Button>
           </div>
         </div>
       </Card>
